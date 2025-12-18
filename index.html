@@ -1,317 +1,305 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Cubezilla – Learn the Rubik's Cube</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width,height=device-height,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+  <title>Cubezilla – Rubik's Cube</title>
+
+  <!-- Three.js -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/95/three.min.js"></script>
+
   <style>
-    /* Basic layout */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
       min-height: 100vh;
+      background: radial-gradient(circle at top, #111827 0, #020617 55%);
+      color: #f9fafb;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+
+    /* ============= Cubezilla onboarding ============= */
+
+    #cubezillaUI {
+      width: 100%;
+      max-width: 960px;
+      padding: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at top, #222 0, #050509 55%);
-      color: #f8f9ff;
     }
 
-    .app-container {
+    .cz-card {
       width: 100%;
-      max-width: 900px;
-      padding: 24px;
-    }
-
-    .card {
-      background: rgba(15, 15, 30, 0.92);
+      background: rgba(15, 23, 42, 0.92);
       border-radius: 18px;
-      padding: 24px 20px 28px;
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(12px);
+      padding: 22px 20px 26px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      backdrop-filter: blur(14px);
     }
 
-    .header {
+    .cz-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      align-items: center;
       margin-bottom: 18px;
+      gap: 10px;
     }
 
-    .logo {
+    .cz-logo {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .logo-mark {
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
+    .cz-logo-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
       background: conic-gradient(
-        from 210deg,
-        #ff6b6b,
-        #ffd93d,
-        #6bffb5,
-        #4dabff,
-        #a66bff,
-        #ff6b6b
+        from 200deg,
+        #f97316,
+        #facc15,
+        #22c55e,
+        #3b82f6,
+        #a855f7,
+        #f97316
       );
-      animation: spin 12s linear infinite;
+      animation: spin 13s linear infinite;
     }
 
-    .logo-text-main {
-      font-weight: 700;
+    .cz-logo-text-main {
       font-size: 1.25rem;
-      letter-spacing: 0.03em;
+      font-weight: 700;
+      letter-spacing: 0.04em;
     }
 
-    .logo-text-sub {
+    .cz-logo-text-sub {
       font-size: 0.8rem;
       color: #9ca3c7;
     }
 
-    .pill {
-      font-size: 0.75rem;
+    .cz-pill {
+      font-size: 0.72rem;
       padding: 4px 10px;
       border-radius: 999px;
-      background: rgba(90, 132, 255, 0.15);
-      border: 1px solid rgba(118, 153, 255, 0.6);
-      color: #d0dcff;
+      background: rgba(59, 130, 246, 0.18);
+      border: 1px solid rgba(129, 140, 248, 0.8);
       text-transform: uppercase;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.16em;
+      color: #c7d2fe;
     }
 
-    .content {
+    .cz-content {
       display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.6fr);
       gap: 20px;
     }
 
-    @media (max-width: 768px) {
-      .content {
+    @media (max-width: 820px) {
+      .cz-content {
         grid-template-columns: 1fr;
       }
     }
 
-    /* Text sections */
-    .hero-text h1 {
+    .cz-hero h1 {
       font-size: 1.8rem;
       margin-bottom: 6px;
     }
 
-    .hero-text p {
+    .cz-hero p {
       font-size: 0.95rem;
-      color: #a9b3d9;
+      color: #9ca3c7;
       margin-bottom: 14px;
       line-height: 1.5;
     }
 
-    .step-label {
+    .cz-step-label {
       font-size: 0.78rem;
       text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: #7d89b8;
+      letter-spacing: 0.18em;
+      color: #6b7280;
       margin-bottom: 4px;
     }
 
-    .section-title {
+    .cz-section-title {
       font-size: 1rem;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
-    /* Popping animated buttons */
-    .button-row {
+    .cz-button-row {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 14px;
     }
 
-    .btn {
-      position: relative;
-      border: none;
-      outline: none;
-      cursor: pointer;
+    .cz-btn {
       border-radius: 999px;
       padding: 10px 18px;
+      border: none;
+      cursor: pointer;
       font-size: 0.9rem;
       font-weight: 600;
-      letter-spacing: 0.02em;
-      color: #f9fbff;
-      background: linear-gradient(135deg, #3949ff, #7b5cff);
-      box-shadow: 0 10px 26px rgba(58, 84, 255, 0.55);
-      transform: translateY(0) scale(1);
+      letter-spacing: 0.03em;
       transition:
         transform 0.16s ease-out,
         box-shadow 0.16s ease-out,
-        filter 0.16s ease-out,
         background 0.16s ease-out,
+        color 0.16s ease-out,
         opacity 0.16s ease-out;
     }
 
-    .btn:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 16px 30px rgba(60, 90, 255, 0.7);
-      filter: brightness(1.08);
+    .cz-btn-primary {
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: #e5edff;
+      box-shadow: 0 14px 32px rgba(37, 99, 235, 0.8);
     }
 
-    .btn:active {
+    .cz-btn-outline {
+      background: transparent;
+      color: #e5e7eb;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+    }
+
+    .cz-btn:hover {
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 16px 38px rgba(59, 130, 246, 0.65);
+    }
+
+    .cz-btn:active {
       transform: translateY(1px) scale(0.97);
-      box-shadow: 0 6px 18px rgba(40, 55, 180, 0.6);
-      filter: brightness(0.94);
+      box-shadow: 0 8px 18px rgba(30, 64, 175, 0.8);
     }
 
-    .btn-outline {
-      background: rgba(14, 20, 50, 0.9);
-      border: 1px solid rgba(123, 143, 255, 0.75);
-      box-shadow: 0 8px 24px rgba(15, 23, 65, 0.9);
-      color: #d6ddff;
-    }
-
-    .btn-outline:hover {
-      background: radial-gradient(circle at top left, #4058ff 0, #141936 55%);
-    }
-
-    .btn-pill-small {
-      padding: 7px 14px;
-      font-size: 0.8rem;
-      border-radius: 999px;
-    }
-
-    .btn-selected {
+    .cz-btn-selected {
       background: linear-gradient(135deg, #10b981, #34d399);
-      box-shadow: 0 12px 30px rgba(16, 185, 129, 0.7);
+      border-color: transparent;
+      color: #ecfdf5;
+      box-shadow: 0 14px 36px rgba(16, 185, 129, 0.8);
     }
 
-    .btn-disabled {
-      opacity: 0.45;
-      pointer-events: none;
-      box-shadow: none;
-    }
-
-    /* 3D cube placeholder */
-    .cube-shell {
-      position: relative;
-      border-radius: 16px;
-      border: 1px solid rgba(110, 125, 255, 0.45);
-      background: radial-gradient(circle at top left, #22294f 0, #050510 60%);
-      min-height: 260px;
-      padding: 14px 14px 20px;
-      overflow: hidden;
-    }
-
-    .cube-shell-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
+    .cz-hint {
       font-size: 0.8rem;
-      color: #aab6ff;
+      color: #9ca3c7;
+      margin-top: 4px;
     }
 
-    .cube-status-dot {
+    .cz-cube-preview {
+      border-radius: 16px;
+      padding: 16px 14px 20px;
+      background: radial-gradient(circle at top left, #1d253b 0, #020617 60%);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      position: relative;
+      overflow: hidden;
+      min-height: 220px;
+    }
+
+    .cz-cube-preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: #9ca3c7;
+      margin-bottom: 10px;
+    }
+
+    .cz-status-dot {
       width: 9px;
       height: 9px;
       border-radius: 999px;
       background: #22c55e;
-      box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
     }
 
-    .cube-canvas-placeholder {
+    .cz-fake-cube-wrap {
       position: absolute;
-      inset: 36px 16px 16px;
+      inset: 34px 16px 16px;
       border-radius: 14px;
-      background: radial-gradient(circle at 20% 0, #4c6fff 0, #050510 60%);
+      border: 1px dashed rgba(148, 163, 184, 0.6);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #d8e0ff;
+      background: radial-gradient(circle at 15% 0, #4f46e5 0, #020617 60%);
+      color: #e5e7eb;
       font-size: 0.9rem;
-      border: 1px dashed rgba(165, 180, 252, 0.55);
     }
 
-    /* Simple cube illusion */
-    .fake-cube {
+    .cz-fake-cube {
+      width: 110px;
+      height: 110px;
       position: relative;
-      width: 120px;
-      height: 120px;
       transform-style: preserve-3d;
       animation: floatCube 6s ease-in-out infinite;
     }
 
-    .fake-face {
+    .cz-fake-face {
       position: absolute;
-      width: 120px;
-      height: 120px;
-      border-radius: 8px;
-      border: 2px solid rgba(15, 23, 42, 0.95);
+      width: 110px;
+      height: 110px;
+      border-radius: 10px;
+      border: 2px solid rgba(15, 23, 42, 0.96);
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
       overflow: hidden;
     }
 
-    .fake-sticker {
-      border: 1px solid rgba(15, 23, 42, 0.9);
+    .cz-fake-sticker {
+      border: 1px solid rgba(15, 23, 42, 0.92);
     }
 
-    .fake-face.front {
+    .cz-fake-face.front {
       background: #f97316;
       transform: rotateX(15deg) rotateY(-25deg) translateZ(50px);
     }
 
-    .fake-face.top {
+    .cz-fake-face.top {
       background: #e5e7eb;
       transform: rotateX(105deg) rotateY(-25deg) translateZ(50px);
-      opacity: 0.85;
+      opacity: 0.9;
     }
 
-    .fake-face.side {
+    .cz-fake-face.side {
       background: #22c55e;
       transform: rotateX(15deg) rotateY(65deg) translateZ(50px);
       opacity: 0.9;
     }
 
-    .hint {
+    .cz-preview-hint {
       position: absolute;
-      bottom: 14px;
       right: 16px;
+      bottom: 14px;
       font-size: 0.76rem;
-      color: #9fa8e6;
-      opacity: 0.95;
+      color: #9ca3c7;
+      text-align: right;
     }
 
-    /* Animations */
     @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     @keyframes floatCube {
-      0%,
-      100% {
-        transform: translateY(0) rotateX(13deg) rotateY(-26deg);
+      0%, 100% {
+        transform: translateY(0) rotateX(14deg) rotateY(-26deg);
       }
       50% {
-        transform: translateY(-8px) rotateX(18deg) rotateY(-20deg);
+        transform: translateY(-8px) rotateX(18deg) rotateY(-18deg);
       }
     }
 
     .fade-in {
-      animation: fadeIn 0.35s ease-out forwards;
+      animation: fadeIn 0.3s ease-out forwards;
       opacity: 0;
       transform: translateY(6px);
     }
@@ -322,169 +310,670 @@
         transform: translateY(0);
       }
     }
+
+    /* ============= Rubik's Cube full app ============= */
+
+    #rubiksContainer {
+      display: none;
+      width: 100%;
+      height: 100vh;
+    }
+
+    .ui {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #020617 0, #000 70%);
+      color: #e5e7eb;
+    }
+
+    .ui__background {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(56, 189, 248, 0.16), transparent 55%),
+        radial-gradient(circle at 80% 0%, rgba(94, 234, 212, 0.18), transparent 55%),
+        radial-gradient(circle at 40% 90%, rgba(129, 140, 248, 0.2), transparent 55%);
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    .ui__game {
+      position: absolute;
+      inset: 0;
+    }
+
+    .ui__texts {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      pointer-events: none;
+    }
+
+    .text--title {
+      font-size: 1.6rem;
+      line-height: 1.1;
+      letter-spacing: 0.14em;
+    }
+
+    .text--title span:first-child {
+      display: block;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      color: #9ca3c7;
+    }
+
+    .text--title span:last-child {
+      display: block;
+      font-weight: 800;
+    }
+
+    .text--note {
+      font-size: 0.8rem;
+      color: #9ca3c7;
+    }
+
+    .text--timer {
+      margin-top: 4px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .text--complete,
+    .text--best-time {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.16);
+      border: 1px solid rgba(34, 197, 94, 0.5);
+      display: none;
+      width: fit-content;
+    }
+
+    .text--best-time {
+      background: rgba(234, 179, 8, 0.14);
+      border-color: rgba(250, 204, 21, 0.7);
+    }
+
+    /* Preferences and theme panels */
+
+    .ui__prefs,
+    .ui__theme,
+    .ui__stats {
+      position: absolute;
+      z-index: 3;
+      right: 14px;
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 10px 12px;
+      font-size: 0.76rem;
+      display: none;
+    }
+
+    .ui__prefs {
+      top: 14px;
+      width: 210px;
+    }
+
+    .ui__theme {
+      top: 14px;
+      width: 210px;
+    }
+
+    .ui__stats {
+      bottom: 70px;
+      width: 230px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+    }
+
+    .stats:last-child {
+      border-bottom: none;
+    }
+
+    .stats i {
+      font-style: normal;
+      color: #9ca3c7;
+      margin-right: 6px;
+    }
+
+    .stats b {
+      font-weight: 600;
+    }
+
+    /* Fake <range> and <icon> styling */
+
+    range {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    range[title]::before {
+      content: attr(title);
+      display: block;
+      font-size: 0.74rem;
+      color: #9ca3c7;
+      margin-bottom: 2px;
+    }
+
+    range[list]::after {
+      content: attr(list);
+      display: block;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: #e5e7eb;
+      font-size: 0.72rem;
+    }
+
+    range[color]::after {
+      background: linear-gradient(90deg, #f97316, #facc15, #22c55e, #3b82f6, #8b5cf6);
+    }
+
+    icon {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid currentColor;
+      margin-right: 6px;
+      vertical-align: -2px;
+    }
+
+    icon[trophy] {
+      color: #facc15;
+    }
+    icon[settings],
+    icon[theme] {
+      border-radius: 3px;
+    }
+    icon[reset] {
+      border-radius: 50%;
+    }
+    icon[back] {
+      border-radius: 2px;
+    }
+
+    /* Buttons inside cube app */
+
+    .ui__buttons {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      z-index: 4;
+    }
+
+    .cube-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: none;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.85);
+      transition:
+        transform 0.16s ease-out,
+        box-shadow 0.16s ease-out,
+        background 0.16s ease-out;
+    }
+
+    .cube-btn:hover {
+      transform: translateY(-1px) scale(1.05);
+      background: rgba(30, 64, 175, 0.95);
+    }
+
+    .cube-btn:active {
+      transform: translateY(1px) scale(0.95);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85);
+    }
+
+    .cube-btn-back {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      width: auto;
+      padding: 0 12px;
+      gap: 6px;
+      font-size: 0.78rem;
+    }
+
+    .cube-btn-back icon[back] {
+      margin-right: 4px;
+    }
   </style>
 </head>
+
 <body>
-  <div class="app-container">
-    <div class="card">
-      <header class="header">
-        <div class="logo">
-          <div class="logo-mark"></div>
-          <div>
-            <div class="logo-text-main">Cubezilla</div>
-            <div class="logo-text-sub">Rubik's Cube tutor & solver</div>
+
+<!-- ============= Cubezilla onboarding ============= -->
+<div id="cubezillaUI">
+  <div class="cz-card">
+    <header class="cz-header">
+      <div class="cz-logo">
+        <div class="cz-logo-mark"></div>
+        <div>
+          <div class="cz-logo-text-main">Cubezilla</div>
+          <div class="cz-logo-text-sub">Rubik's Cube tutor & solver</div>
+        </div>
+      </div>
+      <div class="cz-pill">v0.1 · Prototype</div>
+    </header>
+
+    <div class="cz-content">
+      <section class="cz-hero">
+        <h1>Welcome to Cubezilla</h1>
+        <p>
+          Learn step‑by‑step or let the app solve it for you. You’ll use an online 3D cube, so even
+          without a real cube you can still learn effectively.
+        </p>
+
+        <div>
+          <div class="cz-step-label">Step 1</div>
+          <div class="cz-section-title">How good are you at solving a cube?</div>
+          <div class="cz-button-row" id="czSkillButtons">
+            <button class="cz-btn cz-btn-outline" data-skill="beginner">Beginner</button>
+            <button class="cz-btn cz-btn-outline" data-skill="intermediate">Intermediate</button>
+            <button class="cz-btn cz-btn-outline" data-skill="pro">Pro</button>
           </div>
         </div>
-        <div class="pill">v0.1 · Prototype</div>
-      </header>
 
-      <div class="content">
-        <!-- Left: onboarding & choices -->
-        <section class="hero-text">
-          <h1>Welcome to Cubezilla</h1>
-          <p>
-            Learn, practice, or let the app solve your Rubik’s Cube.
-            Start by telling us how comfortable you are with cubing.
-          </p>
+        <div id="czModeSection" class="fade-in" style="display:none;">
+          <div class="cz-step-label">Step 2</div>
+          <div class="cz-section-title">What do you want to do right now?</div>
+          <div class="cz-button-row">
+            <button class="cz-btn cz-btn-primary" id="czBtnLearn">Learn to solve a cube</button>
+            <button class="cz-btn cz-btn-outline" id="czBtnAutoSolve">Let the app solve it</button>
+          </div>
+          <div class="cz-hint">
+            Both options open the interactive 3D cube. You’ll see it only after choosing your mode.
+          </div>
+        </div>
+      </section>
 
-          <!-- Step 1: Skill level -->
-          <div>
-            <div class="step-label">Step 1</div>
-            <div class="section-title">How good are you at solving a cube?</div>
-            <div class="button-row" id="skillButtons">
-              <button class="btn btn-pill-small btn-outline" data-skill="beginner">
-                Beginner
-              </button>
-              <button class="btn btn-pill-small btn-outline" data-skill="intermediate">
-                Intermediate
-              </button>
-              <button class="btn btn-pill-small btn-outline" data-skill="pro">
-                Pro
-              </button>
+      <section>
+        <div class="cz-cube-preview">
+          <div class="cz-cube-preview-header">
+            <span>Interactive 3D Cube Preview</span>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:0.74rem;">Ready</span>
+              <div class="cz-status-dot"></div>
             </div>
           </div>
-
-          <!-- Step 2: Goal -->
-          <div id="goalSection" class="fade-in" style="display: none;">
-            <div class="step-label">Step 2</div>
-            <div class="section-title">What do you want to do today?</div>
-
-            <div class="button-row">
-              <button class="btn btn-pill-small" id="btnLearn">
-                Learn to solve a cube
-              </button>
-              <button class="btn btn-pill-small btn-outline" id="btnAutoSolve">
-                Let the app solve it
-              </button>
-            </div>
-
-            <p style="font-size: 0.8rem; color: #8f9ad3; margin-top: 4px;">
-              Both options use the interactive 3D cube, so you can learn even without a real cube.
-            </p>
-          </div>
-        </section>
-
-        <!-- Right: cube placeholder -->
-        <section>
-          <div class="cube-shell">
-            <div class="cube-shell-header">
-              <span>Interactive 3D Cube</span>
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span style="font-size: 0.75rem;">Online</span>
-                <div class="cube-status-dot"></div>
+          <div class="cz-fake-cube-wrap">
+            <div class="cz-fake-cube">
+              <div class="cz-fake-face front">
+                <div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div>
+                <div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div>
+                <div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div>
+              </div>
+              <div class="cz-fake-face top">
+                <div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div>
+                <div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div>
+                <div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div>
+              </div>
+              <div class="cz-fake-face side">
+                <div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div>
+                <div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div>
+                <div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div><div class="cz-fake-sticker"></div>
               </div>
             </div>
-
-            <div class="cube-canvas-placeholder">
-              <!-- This is just a visual placeholder.
-                   Later, replace with your real WebGL / Three.js canvas. -->
-              <div class="fake-cube">
-                <div class="fake-face front">
-                  <!-- 3x3 stickers -->
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                </div>
-                <div class="fake-face top">
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                </div>
-                <div class="fake-face side">
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                  <div class="fake-sticker"></div>
-                </div>
-              </div>
-
-              <div class="hint">
-                Drag, tap, or use keyboard<br />
-                (3D controls coming next)
-              </div>
+            <div class="cz-preview-hint">
+              You’ll be able to rotate and<br>practice on a real 3D cube.
             </div>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   </div>
+</div>
 
-  <!-- Minimal JS to handle button states -->
-  <script>
-    const skillButtons = document.querySelectorAll("#skillButtons button");
-    const goalSection = document.getElementById("goalSection");
+<!-- ============= Rubik's Cube full app ============= -->
+<div id="rubiksContainer">
+  <div class="ui">
+    <div class="ui__background"></div>
+    <div class="ui__game" id="cubeCanvas"></div>
 
-    let selectedSkill = null;
+    <div class="ui__texts">
+      <h1 class="text text--title">
+        <span>THE</span>
+        <span>CUBE</span>
+      </h1>
+      <div class="text text--note">Double tap / click to scramble</div>
+      <div class="text text--timer" id="timerDisplay">0:00</div>
+      <div class="text text--complete" id="completeBadge">
+        <span>Complete!</span>
+      </div>
+      <div class="text text--best-time" id="bestTimeBadge">
+        <icon trophy></icon>
+        <span>Best Time!</span>
+      </div>
+    </div>
 
-    skillButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        // Clear previous selection
-        skillButtons.forEach((b) =>
-          b.classList.remove("btn-selected")
-        );
+    <div class="ui__prefs" id="prefsPanel">
+      <range name="size" title="Cube Size" list="2,3,4,5"></range>
+      <range name="flip" title="Flip Type" list="Swift&nbsp;,Smooth,Bounce"></range>
+      <range name="scramble" title="Scramble Length" list="20,25,30"></range>
+      <range name="fov" title="Camera Angle" list="Orthographic,Perspective"></range>
+      <range name="theme" title="Color Scheme" list="Cube,Erno,Dust,Camo,Rain"></range>
+    </div>
 
-        // Mark this one
-        btn.classList.add("btn-selected");
-        selectedSkill = btn.dataset.skill;
+    <div class="ui__theme" id="themePanel">
+      <range name="hue" title="Hue" color></range>
+      <range name="saturation" title="Saturation" color></range>
+      <range name="lightness" title="Lightness" color></range>
+    </div>
 
-        // Reveal step 2
-        if (goalSection.style.display === "none") {
-          goalSection.style.display = "block";
+    <div class="ui__stats" id="statsPanel">
+      <div class="stats" name="cube-size"><i>Cube:</i><b id="statCubeSize">3x3x3</b></div>
+      <div class="stats" name="total-solves"><i>Total solves:</i><b id="statTotalSolves">0</b></div>
+      <div class="stats" name="best-time"><i>Best time:</i><b id="statBestTime">-</b></div>
+      <div class="stats" name="worst-time"><i>Worst time:</i><b id="statWorstTime">-</b></div>
+      <div class="stats" name="average-5"><i>Average of 5:</i><b>-</b></div>
+      <div class="stats" name="average-12"><i>Average of 12:</i><b>-</b></div>
+      <div class="stats" name="average-25"><i>Average of 25:</i><b>-</b></div>
+    </div>
+
+    <div class="ui__buttons">
+      <button class="cube-btn" id="btnStats"><icon trophy></icon></button>
+      <button class="cube-btn" id="btnPrefs"><icon settings></icon></button>
+      <button class="cube-btn" id="btnTheme"><icon theme></icon></button>
+      <button class="cube-btn" id="btnReset"><icon reset></icon></button>
+    </div>
+
+    <button class="cube-btn cube-btn-back" id="btnBackToCubezilla">
+      <icon back></icon>Back to Cubezilla
+    </button>
+  </div>
+</div>
+
+<script>
+  // ============= Cubezilla logic =============
+
+  const skillButtons = document.querySelectorAll("#czSkillButtons button");
+  const czModeSection = document.getElementById("czModeSection");
+  const czBtnLearn = document.getElementById("czBtnLearn");
+  const czBtnAutoSolve = document.getElementById("czBtnAutoSolve");
+  let selectedSkill = null;
+
+  skillButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      skillButtons.forEach(b => b.classList.remove("cz-btn-selected"));
+      btn.classList.add("cz-btn-selected");
+      selectedSkill = btn.dataset.skill;
+      czModeSection.style.display = "block";
+    });
+  });
+
+  function showRubiksApp(mode) {
+    document.getElementById("cubezillaUI").style.display = "none";
+    document.getElementById("rubiksContainer").style.display = "block";
+    console.log("Mode:", mode, "Skill:", selectedSkill);
+    initCubeIfNeeded();
+  }
+
+  czBtnLearn.addEventListener("click", () => showRubiksApp("learn"));
+  czBtnAutoSolve.addEventListener("click", () => showRubiksApp("auto-solve"));
+
+  // Back button inside cube app
+  document.getElementById("btnBackToCubezilla").addEventListener("click", () => {
+    document.getElementById("rubiksContainer").style.display = "none";
+    document.getElementById("cubezillaUI").style.display = "flex";
+  });
+
+  // ============= Rubik's cube app logic =============
+
+  let cubeSceneInitialized = false;
+  let scene, camera, renderer, cubeGroup;
+  let isDragging = false;
+  let previousMousePosition = { x: 0, y: 0 };
+
+  // Simple timing + stats
+  let timerInterval = null;
+  let startTime = null;
+  let totalSolves = 0;
+  let bestTime = null;
+  let worstTime = null;
+
+  const timerDisplay = document.getElementById("timerDisplay");
+  const completeBadge = document.getElementById("completeBadge");
+  const bestTimeBadge = document.getElementById("bestTimeBadge");
+  const statTotalSolves = document.getElementById("statTotalSolves");
+  const statBestTime = document.getElementById("statBestTime");
+  const statWorstTime = document.getElementById("statWorstTime");
+
+  function formatTime(ms) {
+    const s = Math.floor(ms / 1000);
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return m + ":" + (r < 10 ? "0" + r : r);
+  }
+
+  function startTimer() {
+    startTime = Date.now();
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      timerDisplay.textContent = formatTime(elapsed);
+    }, 200);
+  }
+
+  function stopTimer(markComplete = false) {
+    if (!startTime) return;
+    clearInterval(timerInterval);
+    const elapsed = Date.now() - startTime;
+    timerDisplay.textContent = formatTime(elapsed);
+    startTime = null;
+
+    if (markComplete) {
+      totalSolves++;
+      statTotalSolves.textContent = totalSolves.toString();
+      completeBadge.style.display = "inline-flex";
+
+      if (bestTime === null || elapsed < bestTime) {
+        bestTime = elapsed;
+        statBestTime.textContent = formatTime(bestTime);
+        bestTimeBadge.style.display = "inline-flex";
+      } else {
+        bestTimeBadge.style.display = "none";
+      }
+
+      if (worstTime === null || elapsed > worstTime) {
+        worstTime = elapsed;
+        statWorstTime.textContent = formatTime(worstTime);
+      }
+    }
+  }
+
+  function initCubeIfNeeded() {
+    if (cubeSceneInitialized) return;
+    cubeSceneInitialized = true;
+
+    const container = document.getElementById("cubeCanvas");
+    const width = container.clientWidth || window.innerWidth;
+    const height = container.clientHeight || window.innerHeight;
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x020617);
+
+    camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.set(4, 4, 4);
+    camera.lookAt(0, 0, 0);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio || 1);
+    container.appendChild(renderer.domElement);
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.7);
+    scene.add(ambient);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
+    dirLight.position.set(5, 10, 7);
+    scene.add(dirLight);
+
+    cubeGroup = new THREE.Group();
+    scene.add(cubeGroup);
+
+    const stickerColors = {
+      U: 0xffffff, // white
+      D: 0xffff00, // yellow
+      F: 0x00ff00, // green
+      B: 0x0000ff, // blue
+      R: 0xff0000, // red
+      L: 0xffa500  // orange
+    };
+
+    function createCubie(x, y, z) {
+      const geom = new THREE.BoxGeometry(0.9, 0.9, 0.9);
+      const materials = [];
+      const colorOrder = ['R', 'L', 'U', 'D', 'F', 'B']; // right, left, up, down, front, back
+      const pos = { x, y, z };
+
+      for (let i = 0; i < 6; i++) {
+        let color = 0x111827;
+        if (i === 0 && x > 0) color = stickerColors.R;
+        if (i === 1 && x < 0) color = stickerColors.L;
+        if (i === 2 && y > 0) color = stickerColors.U;
+        if (i === 3 && y < 0) color = stickerColors.D;
+        if (i === 4 && z > 0) color = stickerColors.F;
+        if (i === 5 && z < 0) color = stickerColors.B;
+
+        materials.push(new THREE.MeshPhongMaterial({ color }));
+      }
+
+      const mesh = new THREE.Mesh(geom, materials);
+      mesh.position.set(x, y, z);
+      mesh.userData = { x, y, z };
+      return mesh;
+    }
+
+    // 3x3x3 cube
+    for (let x = -1; x <= 1; x++) {
+      for (let y = -1; y <= 1; y++) {
+        for (let z = -1; z <= 1; z++) {
+          const cubie = createCubie(x, y, z);
+          cubeGroup.add(cubie);
         }
+      }
+    }
 
-        console.log("Selected skill:", selectedSkill);
-      });
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    function onMouseDown(event) {
+      isDragging = true;
+      previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+      };
+    }
+
+    function onMouseMove(event) {
+      if (!isDragging) return;
+      const deltaMove = {
+        x: event.clientX - previousMousePosition.x,
+        y: event.clientY - previousMousePosition.y
+      };
+
+      const rotationSpeed = 0.01;
+      cubeGroup.rotation.y += deltaMove.x * rotationSpeed;
+      cubeGroup.rotation.x += deltaMove.y * rotationSpeed;
+
+      previousMousePosition = {
+        x: event.clientX,
+        y: event.clientY
+      };
+    }
+
+    function onMouseUp() {
+      isDragging = false;
+    }
+
+    renderer.domElement.addEventListener("mousedown", onMouseDown);
+    renderer.domElement.addEventListener("mousemove", onMouseMove);
+    renderer.domElement.addEventListener("mouseup", onMouseUp);
+    renderer.domElement.addEventListener("mouseleave", onMouseUp);
+
+    let lastTap = 0;
+    renderer.domElement.addEventListener("click", () => {
+      const currentTime = new Date().getTime();
+      const tapLength = currentTime - lastTap;
+      if (tapLength < 350 && tapLength > 0) {
+        scrambleCube();
+      }
+      lastTap = currentTime;
     });
 
-    const btnLearn = document.getElementById("btnLearn");
-    const btnAutoSolve = document.getElementById("btnAutoSolve");
-
-    btnLearn.addEventListener("click", () => {
-      console.log("Mode: learn", "Skill:", selectedSkill);
-      alert("TODO: Start guided lessons for: " + selectedSkill);
+    window.addEventListener("resize", () => {
+      const w = container.clientWidth || window.innerWidth;
+      const h = container.clientHeight || window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
     });
 
-    btnAutoSolve.addEventListener("click", () => {
-      console.log("Mode: auto-solve", "Skill:", selectedSkill);
-      alert("TODO: Open cube input screen & solver.");
+    function animate() {
+      requestAnimationFrame(animate);
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    function scrambleCube() {
+      startTimer();
+      completeBadge.style.display = "none";
+      bestTimeBadge.style.display = "none";
+
+      const randomRot = () => (Math.random() - 0.5) * Math.PI * 2;
+      cubeGroup.rotation.set(randomRot(), randomRot(), randomRot());
+    }
+
+    // For demo, pressing reset marks "complete"
+    document.getElementById("btnReset").addEventListener("click", () => {
+      cubeGroup.rotation.set(0, 0, 0);
+      stopTimer(true);
     });
-  </script>
+
+    // Panels toggling
+    const prefsPanel = document.getElementById("prefsPanel");
+    const themePanel = document.getElementById("themePanel");
+    const statsPanel = document.getElementById("statsPanel");
+
+    document.getElementById("btnPrefs").addEventListener("click", () => {
+      prefsPanel.style.display = prefsPanel.style.display === "block" ? "none" : "block";
+      themePanel.style.display = "none";
+    });
+
+    document.getElementById("btnTheme").addEventListener("click", () => {
+      themePanel.style.display = themePanel.style.display === "block" ? "none" : "block";
+      prefsPanel.style.display = "none";
+    });
+
+    document.getElementById("btnStats").addEventListener("click", () => {
+      statsPanel.style.display = statsPanel.style.display === "block" ? "none" : "block";
+    });
+  }
+</script>
+
 </body>
 </html>
+
